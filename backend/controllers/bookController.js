@@ -11,7 +11,7 @@ const addBookToShelf = async (req, res) => {
     const shelf = await Shelf.findById(shelfId);
 
     if (!shelf || shelf.user.toString() != req.user.id) {
-      return res.status(404).json({ message: 'Shelf not foundot not authorised'});
+      return res.status(404).json({ message: 'Shelf not found or not authorised'});
   }
 
   const newBook = await Book.create({
