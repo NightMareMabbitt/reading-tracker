@@ -43,10 +43,10 @@ pipeline {
       steps {
         echo 'Pushing Docker image to registry...'
         sh """
-                                    echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
-                                    docker tag $DOCKER_IMAGE:latest $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
-                                    docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
-                                """
+                                            echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
+                                            docker tag $DOCKER_IMAGE:latest $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
+                                            docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
+                                        """
       }
     }
 
