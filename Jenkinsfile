@@ -12,6 +12,7 @@ pipeline {
       steps {
         echo 'Installing Node.js dependencies...'
         sh 'npm install'
+        npm install
       }
     }
 
