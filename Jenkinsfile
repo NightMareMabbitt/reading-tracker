@@ -11,19 +11,20 @@ pipeline {
     stage('Install Backend Dependencies') {
       steps {
         echo 'Installing Backend dependencies...'
-        dir('backend') { // Naviagte to backend dependancies
+        dir(path: 'backend') {
           sh 'npm install'
-       
         }
+
       }
     }
 
     stage('Install Frontend Dependancies') {
       steps {
         echo 'Installing Frontend dependancies...'
-        dir('frontend') {
+        dir(path: 'frontend') {
           sh 'npm install'
         }
+
       }
     }
 
@@ -55,10 +56,10 @@ pipeline {
       steps {
         echo 'Pushing Docker image to registry...'
         sh """
-                                                            echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
-                                                            docker tag $DOCKER_IMAGE:latest $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
-                                                            docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
-                                                        """
+                                                                    echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
+                                                                    docker tag $DOCKER_IMAGE:latest $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
+                                                                    docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
+                                                                """
       }
     }
 
