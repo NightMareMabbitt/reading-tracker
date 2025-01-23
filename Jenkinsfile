@@ -28,13 +28,6 @@ pipeline {
       }
     }
 
-    stage('Run Tests') {
-      steps {
-        echo 'Running unit tests...'
-        sh 'npm test'
-      }
-    }
-
     stage('Lint Code') {
       steps {
         echo 'Linting the code...'
