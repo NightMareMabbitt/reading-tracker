@@ -8,11 +8,22 @@ pipeline {
       }
     }
 
-    stage('Install Dependencies') {
+    stage('Install Backend Dependencies') {
       steps {
-        echo 'Installing Node.js dependencies...'
-        sh 'npm install'
-        npm install
+        echo 'Installing Backend dependencies...'
+        dir('backend') { // Naviagte to backend dependancies
+          sh 'npm install'
+       
+        }
+      }
+    }
+
+    stage('Install Frontend Dependancies') {
+      steps {
+        echo 'Installing Frontend dependancies...'
+        dir('frontend') {
+          sh 'npm install'
+        }
       }
     }
 
