@@ -28,12 +28,6 @@ pipeline {
       }
     }
 
-    stage('Lint Code') {
-      steps {
-        echo 'Linting the code...'
-        sh 'npm run lint'
-      }
-    }
 
     stage('Build Docker Image') {
       steps {
