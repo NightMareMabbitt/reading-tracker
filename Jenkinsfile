@@ -5,6 +5,7 @@ pipeline {
         NODE_ENV = 'production'
         DOCKER_IMAGE = 'reading-tracker'
         DOCKER_REGISTRY = 'thenightmaremabbitt/reading-tracker'
+        DOCKER_CREDENTIALS = credentials('docker') // Jenkins credentials ID for Docker registry
     }
 
     stages {
@@ -45,18 +46,35 @@ pipeline {
                 branch 'main'
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    echo 'Logging in to Docker registry...'
+                echo 'Logging in to Docker registry...'
+                sh """
+                    echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin
+                """
+
+                echo 'Tagging Docker image...'
+                sh """
+                    docker tag $DOCKER_IMAGE:latest $DOCKER_REGISTRY:latest
+                """
+
+                echo 'Pushing Docker image to registry...'
+                sh """
+                    docker push $DOCKER_REGISTRY:latest
+                """
+            }
+        }
+
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'mongo-credentials', usernameVariable: 'MONGO_USER', passwordVariable: 'MONGO_PASSWORD')]) {
+                    echo 'Deploying to production environment...'
                     sh """
-                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin $DOCKER_REGISTRY
-                    """
-                    echo 'Tagging Docker image...'
-                    sh """
-                        docker tag $DOCKER_IMAGE:latest $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
-                    """
-                    echo 'Pushing Docker image to registry...'
-                    sh """
-                        docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:latest
+                        MONGO_URL=mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster.mongodb.net/proddb?retryWrites=true&w=majority \
+                        MONGO_INITDB_ROOT_USERNAME=${MONGO_USER} \
+                        MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD} \
+                        docker-compose -f docker-compose.prod.yml up -d
                     """
                 }
             }
@@ -69,21 +87,6 @@ pipeline {
             steps {
                 echo 'Deploying to development environment...'
                 sh 'docker-compose -f docker-compose.dev.yml up -d'
-            }
-        }
-
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'mongo-credentials', usernameVariable: 'MONGO_USER', passwordVariable: 'MONGO_PASSWORD')]) {
-                    echo 'Deploying to production environment...'
-                    sh """
-                        docker-compose -f docker-compose.prod.yml up -d \
-                        --env MONGO_URL=mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster.mongodb.net/proddb?retryWrites=true&w=majority
-                    """
-                }
             }
         }
     }
@@ -101,3 +104,4 @@ pipeline {
         }
     }
 }
+
