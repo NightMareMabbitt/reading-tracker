@@ -8,6 +8,7 @@ tools {
         DOCKER_IMAGE = 'reading-tracker'
         DOCKER_REGISTRY = 'thenightmaremabbitt/reading-tracker'
         DOCKER_CREDENTIALS = credentials('docker') // Jenkins credentials ID for Docker registry
+        
     }
 
     stages {
