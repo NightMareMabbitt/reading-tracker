@@ -66,33 +66,33 @@ tools {
             }
         }
 
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'mongo-credentials', usernameVariable: 'MONGO_USER', passwordVariable: 'MONGO_PASSWORD')]) {
-                    echo 'Deploying to production environment...'
-                    sh """
-                        MONGO_URL=mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster.mongodb.net/proddb?retryWrites=true&w=majority \
-                        MONGO_INITDB_ROOT_USERNAME=${MONGO_USER} \
-                        MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD} \
-                        docker-compose -f docker-compose.prod.yml up -d
-                    """
-                }
-            }
-        }
+       stage('Deploy to Development') {
+    when {
+        branch 'develop'
+    }
+    steps {
+        echo 'Deploying to development environment...'
+        sh 'docker-compose -f docker-compose.dev.yml up -d'
+    }
+}
 
-        stage('Deploy to Development') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                echo 'Deploying to development environment...'
-                sh 'docker-compose -f docker-compose.dev.yml up -d'
-            }
+stage('Deploy to Production') {
+    when {
+        branch 'main'
+    }
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'mongo-credentials', usernameVariable: 'MONGO_USER', passwordVariable: 'MONGO_PASSWORD')]) {
+            echo 'Deploying to production environment...'
+            sh """
+                export MONGO_URL=mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@cluster.mongodb.net/proddb?retryWrites=true&w=majority
+                export MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+                export MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+                docker-compose -f docker-compose-prod.yml up -d
+            """
         }
     }
+}
+
 
     post {
         always {
