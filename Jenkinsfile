@@ -40,7 +40,7 @@ tools {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t $DOCKER_IMAGE .'
+                sh ' sudo docker build -t $DOCKER_IMAGE .'
             }
         }
 
