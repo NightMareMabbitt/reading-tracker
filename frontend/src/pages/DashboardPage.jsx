@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from "react";
-import API from "../services/api";
+import api from "../services/api";
 
 const DashboardPage = () => {
   <h1>Dashboard</h1>
