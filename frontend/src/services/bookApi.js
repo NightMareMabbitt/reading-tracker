@@ -1,5 +1,5 @@
 const GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes";
-const API_KEY = process.env.REACT_APP_GOOGLE_BOOKS_API_KEY; // Get from .env
+const API_KEY = process.env.GOOGLE_BOOKS_API_KEY; // Get from .env
 
 export const searchBooks = async (query) => {
     try {

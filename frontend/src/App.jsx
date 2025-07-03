@@ -4,6 +4,7 @@ import API from './services/api';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import SearchBar from './components/searchBar';
 
 
 const App = () => {
@@ -33,6 +34,10 @@ const App = () => {
     localStorage.removeItem("token");
   };
 
+  const handleSearch = (searchTerm) => {
+    console.log("Search Term:", searchTerm);
+  };
+
    return (
     <Router>
       <nav>
@@ -49,6 +54,8 @@ const App = () => {
             </>
             )}
       </nav>
+
+      <SearchBar onSearch={handleSearch} />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
