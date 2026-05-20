@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes,  Link, Navigate } from 'react-router-dom';
-import API from './services/api';
+import { BrowserRouter, Route, Routes, Link, Navigate } from 'react-router-dom';
+import api from './services/api';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import SearchBar from './components/searchBar';
+
+const HomePage = () =>  <div>Welcome to Reading Tracker</div>;
 
 
 const App = () => {
   const [authToken, setAuthToken] = useState(localStorage.getItem("token"));
   
   useEffect(() => {
-    if (!authToken) {
-      API.get('/protected', {
-        headers: {
-          Authorization: `Bearer ${authToken}`
-        }
-      })
-
-      .then((response) => 
-        console.log("Protected Route Test:", response.data))
+    if (authToken) {
+      api.get('/users/profile')
+      .then((response) =>
+        console.log('Protected Route Test:', response.data))
       .catch((error) => {
-        console.error("Authentciation Error", error);
-        // Clear Invalid Token
+        console.error('Authentication Error', error);
+        // Clear invalid token
         setAuthToken(null);
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
       });
     }
   }, [authToken]);
@@ -39,7 +36,7 @@ const App = () => {
   };
 
    return (
-    <Router>
+    <BrowserRouter>
       <nav>
         <Link to="/">Home</Link>
         {authToken ? (
@@ -63,13 +60,12 @@ const App = () => {
         <Route path="/login" element={!authToken ? <LoginPage setAuthToken={setAuthToken} /> : <Navigate to ="/dashboard" />} />
         <Route path="/dashboard" element={authToken ? <DashboardPage /> : <Navigate to="/login" />}  />
       </Routes>
-    </Router>
+    </BrowserRouter>
    );
    
     
   };
 
-  const HomePage = () =>  <div>Welcome to Reading Tracker</div>;
-
+  
 
 export default App;

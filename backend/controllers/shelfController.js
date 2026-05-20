@@ -54,18 +54,18 @@ const deleteShelf = async (req, res) => {
   const { id } = req.params;
 
   try {
-    //Find the shelf by ID and make sure it belongs to the current user
+    // Find the shelf by ID and make sure it belongs to the current user
     const shelf = await Shelf.findById(id);
 
-    if (!Shelf || shelf.user.toString() !== req.user.id) {
-      return res.status(404).json({ message: 'Shelf not found or not authorised'});
+    if (!shelf || shelf.user.toString() !== req.user.id) {
+      return res.status(404).json({ message: 'Shelf not found or not authorised' });
     }
 
     await shelf.remove();
 
     res.status(200).json({ message: 'Shelf deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: error.message});
+    res.status(500).json({ message: error.message });
   }
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { searchBooks } from '../services/bookApi';
 
-const SearchBar = () => {
+const SearchBar = ({ onSearch }) => {
 
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +13,9 @@ const SearchBar = () => {
     const results = await searchBooks(searchTerm);
       setBooks(results);
       setSearchTerm(''); // Clear the search bar
+      if (typeof onSearch === 'function') {
+        onSearch(searchTerm);
+      }
     
   };
 
